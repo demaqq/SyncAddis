@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyncAddis - Integrated E-Government Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 0.25rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-login {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Homepage Styles */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            border-radius: 1.5rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn-hero {
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-citizen {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-admin {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 1.25rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-desc {
+            color: var(--gray-600);
+            font-size: 1.05rem;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .login-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            opacity: 0.8;
+        }
+
+        .login-form {
+            padding: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn-login-submit {
+            width: 100%;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-login-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Admin Dashboard */
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-sidebar {
+            background: white;
+            border-radius: 1.25rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .admin-menu {
+            list-style: none;
+        }
+
+        .admin-menu-item {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .admin-menu-item:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .admin-menu-item.active {
+            background-color: #dbeafe;
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .admin-menu-item i {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Admin Content */
+        .admin-content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .admin-section {
+            display: none; /* Hidden by default */
+        }
+
+        .admin-section.active {
+            display: block; /* Shown by JS */
+        }
+        
+        .admin-card {
+            background: white;
+            border-radius: 1.25rem;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 1.25rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .kpi-icon {
+            font-size: 1.5rem;
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            opacity: 0.3;
+        }
+
+        .kpi-card.success { background: linear-gradient(135deg, #059669, #047857); }
+        .kpi-card.warning { background: linear-gradient(135deg, #d97706, #b45309); }
+        .kpi-card.info { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+        .kpi-card.secondary { background: linear-gradient(135deg, #0891b2, #0e7490); }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+        }
+
+        .kpi-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Charts */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            height: 350px;
+            position: relative;
+        }
+
+        /* Citizen Portal */
+        .citizen-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .citizen-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .citizen-header p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 2px solid var(--gray-200);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .service-icon-large {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-title-large {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .service-desc-large {
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-apply {
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Application Form */
+        .application-form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row.single {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-info-box {
+            background: var(--gray-100); 
+            padding: 1rem; 
+            border-radius: 0.75rem;
+        }
+        
+        .form-info-box ul {
+            list-style: none; 
+            padding-left: 0;
+        }
+        
+        .form-info-box li {
+            margin-bottom: 0.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem;
+        }
+        
+        .form-info-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-submit-application {
+            width: 100%;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit-application:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* My Applications */
+        .applications-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+        }
+
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .application-id {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .status-completed {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-processing {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-pending {
+            background-color: #fef9c3;
+            color: #854d0e;
+        }
+
+        .status-documents {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .application-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .application-detail {
+            background: var(--gray-100);
+            padding: 1rem;
+            border-radius: 0.75rem;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .application-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-outline {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gray-100);
+        }
+        
+        /* === NEW CSS FOR REFINEMENTS === */
+        
+        /* Progress Bar for Work Plan */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--gray-200);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            transition: width 0.3s ease;
+        }
+        
+        /* Progress Steps (Acceptance Criteria Checkpoints) */
+        .progress-steps {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--gray-500);
+        }
+        
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .progress-step.active {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Admin Project/Research Section */
+        .admin-card-list {
+            list-style: none;
+            padding-left: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .admin-card-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .admin-card-list li::before {
+            content: '\f00c'; /* FontAwesome check icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--success);
+        }
+        
+        .admin-card-list.research li::before {
+            content: '\f058'; /* FontAwesome check-circle */
+            color: var(--primary);
+        }
+        
+        .admin-card-list.comm li::before {
+            content: '\f044'; /* FontAwesome edit/pen */
+            color: var(--warning);
+        }
+        
+        .crap-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            background: var(--gray-200);
+            color: var(--gray-700);
+            margin-left: 0.5rem;
+        }
+
+        /* === END NEW CSS === */
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .footer-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .footer-section .footer-contact li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--gray-400);
+            font-size: 0.9rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--shadow-xl);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-600);
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-body-content {
+            text-align: center; 
+            padding: 2rem;
+        }
+        
+        .modal-icon-wrapper {
+            width: 80px; 
+            height: 80px; 
+            background: rgba(16, 185, 129, 0.1); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 0 auto 1.5rem;
+        }
+        
+        .modal-icon-wrapper i {
+            font-size: 2.5rem; 
+            color: #10b981;
+        }
+        
+        .modal-body h4 {
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            margin-bottom: 1rem;
+        }
+        
+        .modal-body p {
+            color: var(--gray-600); 
+            font-size: 1.1rem; 
+            margin-bottom: 2rem;
+        }
+        
+        .modal-summary {
+            background: var(--gray-100); 
+            padding: 1.5rem; 
+            border-radius: 1rem; 
+            text-align: left;
+        }
+        
+        .modal-summary-row {
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 0.75rem;
+        }
+        
+        .modal-summary-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .modal-summary-row span {
+            color: var(--gray-600);
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 2px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-login-submit.loading {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+        
+        .btn-login-submit.loading .spinner {
+            display: inline-block;
+        }
+        
+        .btn-login-submit .spinner {
+            display: none;
+        }
+
+        /* SyncAddis Branding */
+        .syncaddis-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-left: 0.5rem;
+        }
+
+        .sync-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            font-size: 0.75rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-sidebar {
+                position: static;
+                width: 100%;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .application-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-sync-alt"></i>
+                    <div>
+                        <h1>SyncAddis <span class="syncaddis-badge"><span class="sync-icon" style="color: #8b5cf6;">✓</span> Verified</span></h1>
+                        <div class="subtitle">Integrated E-Government Platform for Addis Ababa</div>
+                    </div>
+                </div>
+                <div class="nav-tabs">
+                    <button class="tab-btn active" onclick="showPage('home')">
+                        <i class="fas fa-home"></i> Home
+                    </button>
+                    <button class="tab-btn" onclick="showPage('citizen')">
+                        <i class="fas fa-user"></i> Citizen Portal
+                    </button>
+                </div>
+                <div class="auth-buttons" id="authButtons">
+                    <button class="btn-login" onclick="showPage('login')">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="btn-login" onclick="showPage('admin-login')">
+                        <i class="fas fa-user-shield"></i> Admin Login
+                    </button>
+                </div>
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <div class="user-avatar" id="userAvatar">AA</div>
+                    <div>
+                        <div id="userName" style="font-weight: 600;">Addis Ababa Admin</div>
+                        <div id="userRole" style="font-size: 0.8rem; opacity: 0.8;">System Administrator</div>
+                    </div>
+                    <button onclick="logout()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.25rem;">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="notificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Application Submitted Successfully!</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-content">
+                    <div class="modal-icon-wrapper">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h4>Your application has been submitted!</h4>
+                    <p>
+                        Your application ID is <strong id="generatedAppId">BC-2025-892</strong>. 
+                        You can track the status of your application in the "My Applications" section.
+                    </p>
+                    <div class="modal-summary">
+                        <div class="modal-summary-row">
+                            <span>Application ID</span>
+                            <strong id="modalAppId">BC-2025-892</strong>
+                        </div>
+                        <div class="modal-summary-row">
+                            <span>Service Type</span>
+                            <strong id="modalServiceType">Birth Certificate</strong>
+                        </div>
+                        <div class="modal-summary-row">
+                            <span>Submitted</span>
+                            <strong id="modalSubmitDate">Nov 10, 2025</strong>
+                        </div>
+                        <div class="modal-summary-row">
+                            <span>Processing Time</span>
+                            <strong>3-5 days</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" onclick="closeModal()">Close</button>
+                <button class="btn-login-submit" onclick="viewMyApplications()">View My Applications</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="container main-content">
+        
+        <section id="home-page" class="page active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1>From Queues to Clicks: Our Story</h1>
+                    <p>We remember the days of long lines, confusing paperwork, and traveling across the city from one office to another. We knew there had to be a better way. We envisioned a single, unified system that serves the people of Addis Ababa efficiently and with respect. <strong>SyncAddis is that vision realized.</strong></p>
+                    <div class="hero-buttons">
+                        <button class="btn-hero btn-citizen" onclick="showPage('citizen')">
+                            <i class="fas fa-user"></i> Start Your Journey
+                        </button>
+                        <button class="btn-hero btn-admin" onclick="showPage('admin-login')">
+                            <i class="fas fa-user-shield"></i> Administrator Login
+                        </button>
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.8;">
+                        Apply for birth certificates, marriage certificates, business permits, and more—all from one place.
+                    </p>
+                </div>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Integrated System</h3>
+                    <p class="feature-desc">Connect kebele, woreda, and kifle-ketema systems for seamless service delivery across all administrative levels.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Digital Applications</h3>
+                    <p class="feature-desc">Apply for essential documents like birth certificates, marriage certificates, and business permits online.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Real-time Tracking</h3>
+                    <p class="feature-desc">Track the status of your applications in real-time and receive notifications about important updates.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; padding: 3rem 0; background: var(--gray-100); border-radius: 1.5rem;">
+                <h3 style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark);">Trusted by Addis Ababa City Administration</h3>
+                <p style="font-size: 1.25rem; color: var(--gray-600); max-width: 800px; margin: 0 auto 2rem;">
+                    SyncAddis is the official e-government platform for Addis Ababa, serving over 100,000 citizens and 500 administrative offices.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">100K+</div>
+                        <div style="color: var(--gray-600);">Citizens Served</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">500+</div>
+                        <div style="color: var(--gray-600);">Administrative Offices</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">95%</div>
+                        <div style="color: var(--gray-600);">Satisfaction Rate</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="login-page" class="page">
+            <div class="login-container">
+                <div class="login-header">
+                    <h2>Citizen Login</h2>
+                    <p>Access your applications and services</p>
+                </div>
+                <form class="login-form" onsubmit="event.preventDefault(); login('citizen')">
+                    <div class="form-group">
+                        <label class="form-label" for="citizenId">Citizen ID / Phone Number</label>
+                        <input type="text" id="citizenId" class="form-input" placeholder="Enter your ID (e.g., 'citizen')" required value="citizen">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="citizenPassword">Password</label>
+                        <input type="password" id="citizenPassword" class="form-input" placeholder="Enter your password" required value="pass">
+                    </div>
+                    <div class="remember-forgot">
+                        <div class="remember">
+                            <input type="checkbox" id="rememberCitizen">
+                            <label for="rememberCitizen">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-login-submit">
+                        <span class="spinner"></span>
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
+                <div class="login-footer">
+                    <p>Don't have an account? <a href="#" onclick="showPage('home')">Register as a citizen</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin-login-page" class="page">
+            <div class="login-container">
+                <div class="login-header">
+                    <h2>Administrator Login</h2>
+                    <p>Access the administrative dashboard</p>
+                </div>
+                <form class="login-form" onsubmit="event.preventDefault(); login('admin')">
+                    <div class="form-group">
+                        <label class="form-label" for="adminUsername">Username</label>
+                        <input type="text" id="adminUsername" class="form-input" placeholder="Enter your username" required value="admin">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" class="form-input" placeholder="Enter your password" required value="password">
+                    </div>
+                    <div class="remember-forgot">
+                        <div class="remember">
+                            <input type="checkbox" id="rememberAdmin">
+                            <label for="rememberAdmin">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-login-submit">
+                        <span class="spinner"></span>
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
+                <div class="login-footer">
+                    <p>Having trouble? Contact IT Support: <a href="tel:+251900000000">+251-900-000000</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="citizen-page" class="page">
+            <div class="citizen-header">
+                <h2 id="citizenWelcome">Welcome to SyncAddis Citizen Portal</h2>
+                <p>Apply for essential government services, track your applications, and manage your documents in one place.</p>
+            </div>
+
+            <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--dark);">Available Services</h3>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon-large">👶</div>
+                    <h3 class="service-title-large">Birth Certificate</h3>
+                    <p class="service-desc-large">Register newborns and obtain official birth certificates. Processing time: 3-5 days.</p>
+                    <button class="btn-apply" onclick="showPage('apply-birth')">
+                        <i class="fas fa-file-alt"></i> Apply Now
+                    </button>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon-large">💍</div>
+                    <h3 class="service-title-large">Marriage Certificate</h3>
+                    <p class="service-desc-large">Register marriages and obtain official marriage certificates. Processing time: 5-7 days.</p>
+                    <button class="btn-apply" onclick="showPage('apply-marriage')">
+                        <i class="fas fa-file-alt"></i> Apply Now
+                    </button>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon-large">🏢</div>
+                    <h3 class="service-title-large">Business Permit</h3>
+                    <p class="service-desc-large">Register your business and obtain permits for commercial activities. Processing time: 7-15 days.</p>
+                    <button class="btn-apply" onclick="showPage('apply-business')">
+                        <i class="fas fa-file-alt"></i> Apply Now
+                    </button>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.75rem; font-weight: 700; margin: 3rem 0 1.5rem; color: var(--dark);" id="myApplicationsAnchor">My Applications</h3>
+            <div class="applications-grid" id="citizenApplications">
+                
+                <div class="application-card">
+                    <div class="application-header">
+                        <div class="application-id">Birth Certificate</div>
+                        <div class="status-badge status-processing">
+                            <i class="fas fa-cogs"></i> Processing
+                        </div>
+                    </div>
+                    <div class="application-details">
+                        <div class="application-detail">
+                            <div class="detail-label">Application ID</div>
+                            <div class="detail-value">BC-2025-891</div>
+                        </div>
+                        <div class="application-detail">
+                            <div class="detail-label">Submitted On</div>
+                            <div class="detail-value">Nov 08, 2025</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="detail-label" style="margin-bottom: 0.5rem;">Application Work Plan:</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 50%;"></div>
+                        </div>
+                        <ul class="progress-steps">
+                            <li class="progress-step active"><i class="fas fa-check-circle"></i> Submitted</li>
+                            <li class="progress-step active"><i class="fas fa-sync-alt"></i> Woreda Review</li>
+                            <li class="progress-step"><i class="far fa-circle"></i> Kebele Verification</li>
+                            <li class="progress-step"><i class="far fa-circle"></i> Ready for Pickup</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="application-actions" style="margin-top: 1.5rem;">
+                        <button class="btn-outline">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </div>
+                </div>
+                </div>
+        </section>
+
+        <section id="apply-birth-page" class="page">
+            <div class="application-form">
+                <h2 class="form-title">Birth Certificate Application</h2>
+                <form onsubmit="event.preventDefault(); submitApplication('birth')">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="childName">Child's Full Name</label>
+                            <input type="text" id="childName" class="form-input" placeholder="Enter child's name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="birthDate">Date of Birth</label>
+                            <input type="date" id="birthDate" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="fatherName">Father's Full Name</label>
+                            <input type="text" id="fatherName" class="form-input" placeholder="Enter father's name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="motherName">Mother's Full Name</label>
+                            <input type="text" id="motherName" class="form-input" placeholder="Enter mother's name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="kebele">Kebele</label>
+                            <select id="kebele" class="form-select" required>
+                                <option value="">Select kebele</option>
+                                <option value="bole">Bole</option>
+                                <option value="kolfe">Kolfe Keranio</option>
+                                <option value="yeka">Yeka</option>
+                                <option value="nifas">Nifas Silk-Lafto</option>
+                                <option value="lideta">Lideta</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="woreda">Woreda</label>
+                            <select id="woreda" class="form-select" required>
+                                <option value="">Select woreda</option>
+                                <option value="03">Woreda 03</option>
+                                <option value="04">Woreda 04</option>
+                                <option value="05">Woreda 05</option>
+                                <option value="06">Woreda 06</option>
+                                <option value="08">Woreda 08</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label class="form-label" for="address">Home Address</label>
+                            <input type="text" id="address" class="form-input" placeholder="Enter full address" required>
+                        </div>
+                    </div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label class="form-label">Required Documents</label>
+                            <div class="form-info-box">
+                                <ul>
+                                    <li>
+                                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                        Hospital birth certificate
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                        Parents' ID cards (copy)
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                        Marriage certificate (if applicable)
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit-application">
+                        <i class="fas fa-paper-plane"></i> Submit Application
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="apply-marriage-page" class="page">
+            <div class="application-form">
+                <h2 class="form-title">Marriage Certificate Application</h2>
+                <form onsubmit="event.preventDefault(); submitApplication('marriage')">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="brideName">Bride's Full Name</label>
+                            <input type="text" id="brideName" class="form-input" placeholder="Enter bride's name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="groomName">Groom's Full Name</label>
+                            <input type="text" id="groomName" class="form-input" placeholder="Enter groom's name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="marriageDate">Marriage Date</label>
+                            <input type="date" id="marriageDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="ceremonyType">Ceremony Type</label>
+                            <select id="ceremonyType" class="form-select" required>
+                                <option value="">Select ceremony type</option>
+                                <option value="civil">Civil Ceremony</option>
+                                <option value="religious">Religious Ceremony</option>
+                                <option value="traditional">Traditional Ceremony</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label class="form-label">Required Documents</label>
+                            <div class="form-info-box">
+                                <ul>
+                                    <li>
+                                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                        Valid ID cards for both parties
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                        Marriage ceremony certificate
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                        Two passport photos each
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit-application">
+                        <i class="fas fa-paper-plane"></i> Submit Application
+                    </button>
+                </form>
+            </div>
+        </section>
+        
+        <section id="apply-business-page" class="page">
+            <div class="application-form">
+                <h2 class="form-title">Business Permit Application</h2>
+                <form onsubmit="event.preventDefault(); submitApplication('business')">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="businessName">Business Name</label>
+                            <input type="text" id="businessName" class="form-input" placeholder="Enter business name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="tinNumber">TIN Number</label>
+                            <input type="text" id="tinNumber" class="form-input" placeholder="Enter TIN" required>
+                        </div>
+                    </div>
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label class="form-label" for="businessAddress">Business Address</label>
+                            <input type="text" id="businessAddress" class="form-input" placeholder="Enter full address" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit-application">
+                        <i class="fas fa-paper-plane"></i> Submit Application
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="admin-dashboard-page" class="page">
+            <div class="admin-layout">
+                <aside class="admin-sidebar">
+                    <ul class="admin-menu">
+                        <li><a href="#" class="admin-menu-item active" onclick="event.preventDefault(); showAdminSection('dashboard')">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a></li>
+                        <li><a href="#" class="admin-menu-item" onclick="event.preventDefault(); showAdminSection('applications')">
+                            <i class="fas fa-file-alt"></i> Applications
+                        </a></li>
+                        <li><a href="#" class="admin-menu-item" onclick="event.preventDefault(); showAdminSection('projects')">
+                            <i class="fas fa-tasks"></i> Project & Research
+                        </a></li>
+                        <li><a href="#" class="admin-menu-item" onclick="event.preventDefault(); showAdminSection('analytics')">
+                            <i class="fas fa-chart-bar"></i> Analytics
+                        </a></li>
+                        <li><a href="#" class="admin-menu-item" onclick="event.preventDefault(); showAdminSection('units')">
+                            <i class="fas fa-building"></i> Administrative Units
+                        </a></li>
+                        <li><a href="#" class="admin-menu-item" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a></li>
+                    </ul>
+                </aside>
+
+                <main class="admin-main">
+                    <div id="admin-dashboard-section" class="admin-section active">
+                        <div class="admin-card" style="margin-bottom: 2rem;">
+                            <div class="section-header" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                                <h2 class="section-title">Administrator Dashboard</h2>
+                                <div class="section-actions">
+                                    <span style="color: var(--gray-600);">Last updated: <span id="lastUpdated">Nov 10, 2025 2:30 PM</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpi-grid">
+                            <div class="kpi-card">
+                                <div class="kpi-icon"><i class="fas fa-file-alt"></i></div>
+                                <div class="kpi-value" id="adminTotalApps">1,247</div>
+                                <div class="kpi-label">Total Applications</div>
+                            </div>
+                            <div class="kpi-card success">
+                                <div class="kpi-icon"><i class="fas fa-clock"></i></div>
+                                <div class="kpi-value" id="adminAvgTime">3.4</div>
+                                <div class="kpi-label">Avg. Days (Birth Cert.)</div>
+                            </div>
+                            <div class="kpi-card warning">
+                                <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div class="kpi-value" id="adminPending">24</div>
+                                <div class="kpi-label">Pending Review</div>
+                            </div>
+                            <div class="kpi-card info">
+                                <div class="kpi-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="kpi-value" id="adminCompRate">78%</div>
+                                <div class="kpi-label">Completion Rate</div>
+                            </div>
+                            <div class="kpi-card secondary">
+                                <div class="kpi-icon"><i class="fas fa-star"></i></div>
+                                <div class="kpi-value" id="adminSatisfaction">4.6</div>
+                                <div class="kpi-label">Citizen Satisfaction</div>
+                            </div>
+                        </div>
+
+                        <div class="charts-row">
+                            <div class="admin-card">
+                                <h3 class="section-title" style="margin-bottom: 1.5rem;">Applications per Kebele (Last 30 Days)</h3>
+                                <div class="chart-container">
+                                    <canvas id="applicationsChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="admin-card">
+                                <h3 class="section-title" style="margin-bottom: 1.5rem;">Service Breakdown</h3>
+                                <div class="chart-container">
+                                    <canvas id="serviceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="admin-applications-section" class="admin-section">
+                        <div class="admin-card">
+                            <div class="section-header">
+                                <h2 class="section-title">All Applications</h2>
+                                <div class="section-actions">
+                                    <button class="btn-outline">
+                                        <i class="fas fa-filter"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div style="text-align: center; padding: 3rem;">
+                                <i class="fas fa-file-alt" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Applications Management</h3>
+                                <p style="color: var(--gray-600); max-width: 600px; margin: 0 auto;">
+                                    This section will display all citizen applications. You can filter, search, and update application statuses from here.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="admin-projects-section" class="admin-section">
+                        <div class="section-header" style="border: none; margin-bottom: 0;">
+                            <h2 class="section-title">Internal Project & Research</h2>
+                        </div>
+                        
+                        <div class="admin-content-grid">
+                            <div class="admin-card">
+                                <h3 class="section-title" style="margin-bottom: 1rem;">Featured Project: Digital ID Integration</h3>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+                                    <strong>Statement of Work (SOW):</strong> Integrate the new national Digital ID system to auto-fill applications, reducing data entry errors and verification time.
+                                </p>
+                                
+                                <h4 style="font-weight: 600; color: var(--dark); margin-bottom: 0.5rem;">Key Deliverables:</h4>
+                                <ul class="admin-card-list">
+                                    <li>API connection to Digital ID database.</li>
+                                    <li>"Login with Digital ID" button on citizen portal.</li>
+                                    <li>Auto-fill functionality for all application forms.</li>
+                                </ul>
+                                
+                                <h4 style="font-weight: 600; color: var(--dark); margin-bottom: 0.5rem; margin-top: 1.5rem;">Acceptance Criteria:</h4>
+                                <ul class="admin-card-list">
+                                    <li>System successfully retrieves and populates user data in < 1.5 seconds.</li>
+                                    <li>Data entry errors are reduced by at least 40%.</li>
+                                    <li>User satisfaction with application process increases by 10 points.</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="admin-card">
+                                <h3 class="section-title" style="margin-bottom: 1rem;">Research & Planning</h3>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+                                    All initiatives begin with a clear research plan to ensure efficient utilization of resources.
+                                </p>
+                                
+                                <h4 style="font-weight: 600; color: var(--dark); margin-bottom: 0.5rem;">Research Plan (Step 1):</h4>
+                                <ul class="admin-card-list research">
+                                    <li><strong>Objective:</strong> To determine the impact of Digital ID integration on application processing time.</li>
+                                    <li><strong>Comparative Question:</strong> "Is there a significant difference in processing time <strong>between</strong> citizens using Digital ID <strong>and</strong> those using manual entry?"</li>
+                                    <li><strong>Variables:</strong> (1) Processing Time (in hours), (2) Entry Method (Digital vs. Manual).</li>
+                                    <li><strong>Population:</strong> All new applicants in Bole and Yeka sub-cities.</li>
+                                </ul>
+
+                                <div class="form-info-box" style="margin-top: 1.5rem;">
+                                    <strong>Note:</strong> All external data sources are vetted using the <strong>CRAP Model</strong> (<span class="crap-badge">Currency</span> <span class="crap-badge">Reliability</span> <span class="crap-badge">Authority</span> <span class="crap-badge">Purpose</span>).
+                                </div>
+                            </div>
+
+                            <div class="admin-card">
+                                <h3 class="section-title" style="margin-bottom: 1rem;">Communication & Rollout</h3>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+                                    Planning for effective communication with stakeholders and the public.
+                                </p>
+                                
+                                <h4 style="font-weight: 600; color: var(--dark); margin-bottom: 0.5rem;">Planning Checklist:</h4>
+                                <ul class="admin-card-list comm">
+                                    <li>Create <strong>Outline</strong> for internal All-Hands presentation.</li>
+                                    <li>Draft <strong>Product/Feature Release Announcement</strong> for citizen portal.</li>
+                                    <li>Update all "Help" and FAQ documentation.</li>
+                                </ul>
+                                
+                                <div class="form-group" style="margin-top: 1.5rem;">
+                                    <label class="form-label" for="commVoice">Communication Voice & Tone:</label>
+                                    <select id="commVoice" class="form-select">
+                                        <option value="empathetic">Empathetic & Clear (Default)</option>
+                                        <option value="formal">Formal & Authoritative</option>
+                                        <option value="inspirational">Inspirational & Visionary</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="admin-analytics-section" class="admin-section">
+                        <div class="admin-card">
+                            <div class="section-header">
+                                <h2 class="section-title">Analytics & Reporting</h2>
+                            </div>
+                            <div style="text-align: center; padding: 3rem;">
+                                <i class="fas fa-chart-bar" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Advanced Analytics</h3>
+                                <p style="color: var(--gray-600); max-width: 600px; margin: 0 auto;">
+                                    This section will contain detailed reports, data exports, and trend analysis on service delivery and operational efficiency.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="admin-units-section" class="admin-section">
+                        <div class="admin-card">
+                            <div class="section-header">
+                                <h2 class="section-title">Administrative Units</h2>
+                            </div>
+                            <div style="text-align: center; padding: 3rem;">
+                                <i class="fas fa-building" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;"></i>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Manage Kebeles & Woredas</h3>
+                                <p style="color: var(--gray-600); max-width: 600px; margin: 0 auto;">
+                                    This section will allow for the management of administrative offices, user accounts (clerks, reviewers), and service assignments.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <i class="fas fa-sync-alt" style="font-size: 2rem; color: #8b5cf6;"></i>
+                        <h3 style="font-size: 1.5rem; font-weight: 700;">SyncAddis</h3>
+                    </div>
+                    <p style="color: var(--gray-400); line-height: 1.6;">
+                        Integrated e-government platform connecting kebele, woreda, and kifle-ketema systems 
+                        for seamless public service delivery in Addis Ababa.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home')">Home</a></li>
+                        <li><a href="#" onclick="showPage('citizen')">Citizen Portal</a></li>
+                        <li><a href="#" onclick="showPage('login')">Citizen Login</a></li>
+                        <li><a href="#" onclick="showPage('admin-login')">Admin Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#" onclick="showPage('apply-birth')">Birth Certificate</a></li>
+                        <li><a href="#" onclick="showPage('apply-marriage')">Marriage Certificate</a></li>
+                        <li><a href="#" onclick="showPage('apply-business')">Business Permit</a></li>
+                        <li><a href="#">Residence Certificate</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-phone"></i> Call Center: 900</li>
+                        <li><i class="fas fa-comment"></i> WhatsApp: +251-900-000-001</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Location: Arat Kilo, Addis Ababa</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2025 Addis Ababa City Administration. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+<script>
+    let activeUser = null;
+    let applicationsChartInstance = null;
+    let serviceChartInstance = null;
+
+    // --- Page & Section Navigation ---
+
+    function showPage(pageId) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+        
+        // Show the target page
+        const targetPage = document.getElementById(pageId + '-page');
+        if (targetPage) {
+            targetPage.classList.add('active');
+        } else {
+            // Default to home if page not found
+            document.getElementById('home-page').classList.add('active');
+        }
+        
+        // Update header tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        if (pageId === 'home') {
+            document.querySelector('.tab-btn[onclick="showPage(\'home\')"]').classList.add('active');
+        } else if (pageId.startsWith('citizen') || pageId.startsWith('apply-')) {
+            document.querySelector('.tab-btn[onclick="showPage(\'citizen\')"]').classList.add('active');
+        }
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
+    }
+
+    function showAdminSection(sectionId) {
+        // Hide all admin sections
+        document.querySelectorAll('.admin-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Show the target section
+        document.getElementById('admin-' + sectionId + '-section').classList.add('active');
+        
+        // Update active menu item
+        document.querySelectorAll('.admin-menu-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelector(`.admin-menu-item[onclick*="'${sectionId}'"]`).classList.add('active');
+    }
+
+    // --- Authentication ---
+
+    function login(userType) {
+        const authBtn = (userType === 'admin') 
+            ? document.querySelector('#admin-login-page .btn-login-submit') 
+            : document.querySelector('#login-page .btn-login-submit');
+        
+        authBtn.classList.add('loading');
+        authBtn.disabled = true;
+
+        setTimeout(() => { // Simulate API call
+            authBtn.classList.remove('loading');
+            authBtn.disabled = false;
+            
+            if (userType === 'admin') {
+                activeUser = { type: 'admin', name: 'Addis Admin', avatar: 'AA', role: 'System Administrator' };
+                showPage('admin-dashboard');
+                initAdminCharts();
+            } else {
+                activeUser = { type: 'citizen', name: 'Citizen User', avatar: 'CU', role: 'Verified Citizen' };
+                document.getElementById('citizenWelcome').innerText = `Welcome back, ${activeUser.name}!`;
+                showPage('citizen');
+            }
+            
+            updateHeader();
+        }, 1000);
+    }
+
+    function logout() {
+        activeUser = null;
+        showPage('home');
+        updateHeader();
+    }
+
+    function updateHeader() {
+        const authButtons = document.getElementById('authButtons');
+        const userMenu = document.getElementById('userMenu');
+        
+        if (activeUser) {
+            authButtons.style.display = 'none';
+            userMenu.style.display = 'flex';
+            document.getElementById('userName').innerText = activeUser.name;
+            document.getElementById('userAvatar').innerText = activeUser.avatar;
+            document.getElementById('userRole').innerText = activeUser.role;
+        } else {
+            authButtons.style.display = 'flex';
+            userMenu.style.display = 'none';
+        }
+    }
+
+    // --- Application & Modal Logic ---
+
+    function submitApplication(type) {
+        const appId = `${type.slice(0, 2).toUpperCase()}-2025-${Math.floor(Math.random() * 900) + 100}`;
+        const serviceName = type === 'birth' ? 'Birth Certificate' : (type === 'marriage' ? 'Marriage Certificate' : 'Business Permit');
+        const submitDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2025' });
+
+        // Update modal content
+        document.getElementById('generatedAppId').innerText = appId;
+        document.getElementById('modalAppId').innerText = appId;
+        document.getElementById('modalServiceType').innerText = serviceName;
+        document.getElementById('modalSubmitDate').innerText = submitDate;
+        
+        // Show modal
+        document.getElementById('notificationModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('notificationModal').style.display = 'none';
+    }
+
+    function viewMyApplications() {
+        closeModal();
+        showPage('citizen');
+        // Scroll to the "My Applications" section
+        document.getElementById('myApplicationsAnchor').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- Admin Dashboard Charts ---
+
+    function initAdminCharts() {
+        const appCtx = document.getElementById('applicationsChart');
+        const srvCtx = document.getElementById('serviceChart');
+
+        Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+        Chart.defaults.color = 'var(--gray-600)';
+
+        if (appCtx && !applicationsChartInstance) {
+            applicationsChartInstance = new Chart(appCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Bole', 'Yeka', 'Kolfe', 'Nifas Silk', 'Lideta', 'Arada'],
+                    datasets: [{
+                        label: 'Applications',
+                        data: [120, 88, 65, 92, 45, 30],
+                        backgroundColor: 'rgba(30, 64, 175, 0.7)',
+                        borderColor: 'var(--primary-dark)',
+                        borderRadius: 5,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'var(--gray-200)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        if (srvCtx && !serviceChartInstance) {
+            serviceChartInstance = new Chart(srvCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Birth Cert.', 'Marriage Cert.', 'Business Permit'],
+                    datasets: [{
+                        data: [450, 310, 190],
+                        backgroundColor: [
+                            'var(--primary)',
+                            'var(--secondary)',
+                            'var(--success)'
+                        ],
+                        borderColor: 'var(--light)',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 20 }
+                        }
+                    }
+                }
+            });
+        }
+    }
+    
+    // Initial setup
+    document.addEventListener('DOMContentLoaded', () => {
+        showPage('home');
+    });
+
+</script>
+
+</body>
+</html>
